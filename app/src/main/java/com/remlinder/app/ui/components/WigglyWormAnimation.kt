@@ -130,9 +130,19 @@ fun WigglyWormAnimation(
             )
 
             val glowWidth = strokeWidth * 2.5f
+            val glowBrush = Brush.linearGradient(
+                colors = listOf(
+                    wormColorStart.copy(alpha = alpha * 0.15f),
+                    accentColor.copy(alpha = alpha * 0.15f),
+                    wormColorEnd.copy(alpha = alpha * 0.15f),
+                    wormColorStart.copy(alpha = alpha * 0.15f)
+                ),
+                start = gradientStart,
+                end = gradientEnd
+            )
             drawPath(
                 path = path,
-                brush = gradientBrush.copy(alpha = alpha * 0.15f),
+                brush = glowBrush,
                 style = Stroke(
                     width = glowWidth.coerceAtLeast(1f),
                     cap = StrokeCap.Round,

@@ -85,7 +85,7 @@ fun MainTimerScreen(
     val remainingSeconds by viewModel.remainingSeconds.collectAsState()
     val totalSeconds by viewModel.totalSeconds.collectAsState()
     val timerComplete by viewModel.timerComplete.collectAsState()
-    val activeCount by viewModel.activeCount.collectAsState()
+    val activeCount by viewModel.activeCount.collectAsState(initial = 0)
 
     var showCreateSheet by remember { mutableStateOf(false) }
     var selectedMediaType by remember { mutableStateOf(MediaType.TEXT) }
