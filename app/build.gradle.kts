@@ -60,9 +60,6 @@ android {
     }
 }
 
-tasks.withType<com.android.build.gradle.tasks.LintTask>().configureEach { enabled = false }
-tasks.withType<com.android.build.gradle.tasks.LintGlobalTask>().configureEach { enabled = false }
-
 dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2026.05.01")
     implementation(composeBom)
