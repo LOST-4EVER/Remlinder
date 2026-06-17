@@ -48,6 +48,10 @@ class ReminderRepository(private val dao: ReminderDao) {
         dao.snooze(id, true, nextTrigger)
     }
 
+    suspend fun resetSnooze(id: Long) {
+        dao.resetSnooze(id)
+    }
+
     suspend fun cleanOldCompleted() {
         val weekAgo = System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000
         dao.cleanOldCompleted(weekAgo)

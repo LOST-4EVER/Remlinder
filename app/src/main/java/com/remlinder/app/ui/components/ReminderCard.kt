@@ -30,11 +30,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.remlinder.app.data.local.MediaType
 import com.remlinder.app.data.local.ReminderEntity
+import com.remlinder.app.ui.theme.CardBorder
+import com.remlinder.app.ui.theme.SuccessGreen
+import com.remlinder.app.ui.theme.TimerAccent
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -43,6 +46,7 @@ import java.util.Locale
 fun ReminderCard(
     reminder: ReminderEntity,
     onDelete: () -> Unit,
+    onComplete: (() -> Unit)? = null,
     onSnooze: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
@@ -60,7 +64,15 @@ fun ReminderCard(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest
+        ),
+        border = CardDefaults.outlinedCardBorder().copy(
+            brush = Brush.horizontalGradient(
+                colors = listOf(
+                    CardBorder.copy(alpha = 0.3f),
+                    CardBorder.copy(alpha = 0.1f)
+                )
+            )
         )
     ) {
         Row(
@@ -73,13 +85,20 @@ fun ReminderCard(
                 modifier = Modifier
                     .size(44.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
+                    .background(
+                        Brush.linearGradient(
+                            colors = listOf(
+                                TimerAccent.copy(alpha = 0.2f),
+                                TimerAccent.copy(alpha = 0.05f)
+                            )
+                        )
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
+                    tint = TimerAccent,
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -98,7 +117,7 @@ fun ReminderCard(
                     Text(
                         text = reminder.description,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -110,19 +129,28 @@ fun ReminderCard(
                     Icon(
                         imageVector = Icons.Default.Notifications,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
                         modifier = Modifier.size(14.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = timeStr,
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                     )
                 }
             }
 
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(0.dp)) {
+                if (onComplete != null) {
+                    IconButton(onClick = onComplete) {
+                        Icon(
+                            imageVector = Icons.Default.CheckCircle,
+                            contentDescription = "Complete",
+                            tint = SuccessGreen
+                        )
+                    }
+                }
                 if (onSnooze != null) {
                     IconButton(onClick = onSnooze) {
                         Icon(

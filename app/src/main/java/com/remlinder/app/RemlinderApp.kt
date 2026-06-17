@@ -3,11 +3,11 @@ package com.remlinder.app
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.os.Build
 import androidx.work.Configuration
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.remlinder.app.service.TimerOverlayService
 import com.remlinder.app.worker.DailyCacheWorker
 import java.util.concurrent.TimeUnit
 
@@ -15,12 +15,12 @@ class RemlinderApp : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
-        createNotificationChannel()
+        createNotificationChannels()
         scheduleDailyCache()
     }
 
-    private fun createNotificationChannel() {
-        val channel = NotificationChannel(
+    private fun createNotificationChannels() {
+        val alarmChannel = NotificationChannel(
             REMINDER_CHANNEL_ID,
             "Reminders",
             NotificationManager.IMPORTANCE_HIGH
@@ -31,8 +31,18 @@ class RemlinderApp : Application(), Configuration.Provider {
             setShowBadge(true)
         }
 
+        val overlayChannel = NotificationChannel(
+            TimerOverlayService.OVERLAY_CHANNEL_ID,
+            "Timer Overlay",
+            NotificationManager.IMPORTANCE_LOW
+        ).apply {
+            description = "Shows floating timer over other apps"
+            setShowBadge(false)
+        }
+
         val notificationManager = getSystemService(NotificationManager::class.java)
-        notificationManager.createNotificationChannel(channel)
+        notificationManager.createNotificationChannel(alarmChannel)
+        notificationManager.createNotificationChannel(overlayChannel)
     }
 
     private fun scheduleDailyCache() {

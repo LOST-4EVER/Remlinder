@@ -29,9 +29,6 @@ interface ReminderDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(reminder: ReminderEntity): Long
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(reminders: List<ReminderEntity>)
-
     @Update
     suspend fun update(reminder: ReminderEntity)
 
@@ -47,7 +44,10 @@ interface ReminderDao {
     @Query("UPDATE reminders SET isSnoozed = :isSnoozed, snoozeCount = snoozeCount + 1, nextTriggerAtMillis = :nextTrigger WHERE id = :id")
     suspend fun snooze(id: Long, isSnoozed: Boolean, nextTrigger: Long)
 
-    @Query("DELETE FROM reminders WHERE isCompleted = 1 AND createdAt < :before")
+    @Query("UPDATE reminders SET isSnoozed = 0, nextTriggerAtMillis = NULL WHERE id = :id")
+    suspend fun resetSnooze(id: Long)
+
+    @Query("DELETE FROM reminders WHERE isCompleted = 1 AND triggerAtMillis < :before")
     suspend fun cleanOldCompleted(before: Long)
 
     @Query("SELECT COUNT(*) FROM reminders WHERE isCompleted = 0")
