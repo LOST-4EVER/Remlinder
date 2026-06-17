@@ -124,7 +124,7 @@ private fun AlarmContent(
     onSnooze: (Int) -> Unit
 ) {
     val context = LocalContext.current
-    var reminder by remember { mutableStateOf(com.remlinder.app.data.local.ReminderEntity?) }
+    var reminder by remember { mutableStateOf<com.remlinder.app.data.local.ReminderEntity?>(null) }
     var mediaPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
 
     LaunchedEffect(reminderId) {
